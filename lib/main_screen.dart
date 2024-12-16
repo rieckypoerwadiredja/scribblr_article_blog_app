@@ -169,32 +169,34 @@ class ArticleList extends StatelessWidget {
                           ),
                         ),
                         // Konten Card
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                    child: TitleCard(
-                                  color:
-                                      Theme.of(context).colorScheme.onPrimary,
-                                  title: screenWidth < 450
-                                      ? (article.title.length < 30
-                                          ? article.title
-                                          : "${article.title.substring(0, 30)}...")
-                                      : (screenWidth < 765
-                                          ? (article.title.length < 30
-                                              ? article.title
-                                              : "${article.title.substring(0, 25)}...")
-                                          : (article.title.length < 35
-                                              ? article.title
-                                              : "${article.title.substring(0, 35)}...")),
-                                )),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
+                        Container(
+                          width: double.infinity,
+                          height: (constraints.maxHeight * 0.5) -
+                              8, // 50% dari tinggi Card
+                          padding: const EdgeInsets.only(
+                              left: 8, right: 8, top: 4, bottom: 4),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TitleCard(
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                title: screenWidth < 450
+                                    ? (article.title.length < 30
+                                        ? article.title
+                                        : "${article.title.substring(0, 30)}...")
+                                    : (screenWidth < 765
+                                        ? (article.title.length < 30
+                                            ? article.title
+                                            : "${article.title.substring(0, 25)}...")
+                                        : (article.title.length < 35
+                                            ? article.title
+                                            : "${article.title.substring(0, 35)}...")),
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(children: [
                                     ClipOval(
                                       child: Image.network(
                                         article.authorImage,
@@ -202,6 +204,9 @@ class ArticleList extends StatelessWidget {
                                         height: 20,
                                         width: 20,
                                       ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
                                     ),
                                     if (screenWidth > 375) ...[
                                       Text(
@@ -213,43 +218,45 @@ class ArticleList extends StatelessWidget {
                                               .onPrimary,
                                         ),
                                       ),
+                                    ],
+                                  ]),
+                                  if (screenWidth > 375 &&
+                                      screenWidth < 550) ...[
+                                    Icon(
+                                      Icons.circle,
+                                      size: 8,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimary,
+                                    ),
+                                  ],
+                                  // gap publish dan waktu sekarang
+                                  Row(
+                                    children: [
+                                      Text(
+                                        DateTime.now()
+                                                    .difference(articlePublish)
+                                                    .inDays >=
+                                                1
+                                            ? "${DateTime.now().difference(articlePublish).inDays} days ago"
+                                            : "${DateTime.now().difference(articlePublish).inHours} hours ago",
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary),
+                                      ),
                                       Icon(
-                                        Icons.circle,
-                                        size: 8,
+                                        Icons.more_vert,
                                         color: Theme.of(context)
                                             .colorScheme
                                             .onPrimary,
                                       ),
                                     ],
-                                    // gap publish dan waktu sekarang
-                                    Row(
-                                      children: [
-                                        Text(
-                                          DateTime.now()
-                                                      .difference(
-                                                          articlePublish)
-                                                      .inDays >=
-                                                  1
-                                              ? "${DateTime.now().difference(articlePublish).inDays} days ago"
-                                              : "${DateTime.now().difference(articlePublish).inHours} hours ago",
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimary),
-                                        ),
-                                        Icon(
-                                          Icons.more_vert,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onPrimary,
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  )
+                                ],
+                              ),
+                            ],
                           ),
                         )
                       ],

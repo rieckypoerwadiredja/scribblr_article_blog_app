@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scribblr_article_blog_app/main_screen.dart';
+import 'package:scribblr_article_blog_app/page/home_screen.dart';
 import 'package:scribblr_article_blog_app/widget/buttons/button_primary.dart';
 import 'package:scribblr_article_blog_app/widget/buttons/button_secondary.dart';
 import 'package:scribblr_article_blog_app/widget/texts/desc_page.dart';
@@ -103,7 +104,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       onClick: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
-                          return const MainScreen();
+                          return const HomeScreen();
                         }));
                       },
                     ),
@@ -123,7 +124,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           } else {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                              return const MainScreen();
+                              return const HomeScreen();
                             }));
                           }
                         });

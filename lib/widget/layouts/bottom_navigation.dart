@@ -5,6 +5,7 @@ class BottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       height: 80,
       decoration: BoxDecoration(
@@ -19,8 +20,9 @@ class BottomNavigation extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 32), // Rata kiri dan kanan
+        padding: EdgeInsets.symmetric(
+          horizontal: screenWidth < 550 ? 32 : 50,
+        ), // Rata kiri dan kanan
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
