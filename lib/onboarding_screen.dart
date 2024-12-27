@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scribblr_article_blog_app/main_screen.dart';
 import 'package:scribblr_article_blog_app/page/home_screen.dart';
 import 'package:scribblr_article_blog_app/widget/buttons/button_primary.dart';
 import 'package:scribblr_article_blog_app/widget/buttons/button_secondary.dart';

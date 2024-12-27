@@ -24,12 +24,7 @@ class CardMenu extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            SizedBox(
-              height: 200,
-              child: Expanded(
-                child: children,
-              ),
-            ),
+            SizedBox(height: 200, child: children),
           ],
         ));
   }
