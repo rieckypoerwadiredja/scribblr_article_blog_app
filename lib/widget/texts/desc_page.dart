@@ -5,9 +5,11 @@ class DescPage extends StatelessWidget {
   final TextAlign textAlign;
   final Color color;
   final FontWeight bold;
+  final FontStyle fontStyle;
   const DescPage(
       {super.key,
       required this.desc,
+      this.fontStyle = FontStyle.normal,
       this.color = const Color(0xFF757575),
       this.bold = FontWeight.w400,
       this.textAlign = TextAlign.start});
@@ -31,6 +33,7 @@ class DescPage extends StatelessWidget {
       style: TextStyle(
         fontSize: fontSize,
         fontFamily: 'Poppins',
+        fontStyle: fontStyle,
         color: color,
         fontWeight: bold,
       ),

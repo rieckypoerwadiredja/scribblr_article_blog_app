@@ -16,18 +16,28 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: screenWidth >= 768
+          ? MainAxisAlignment.center
+          : MainAxisAlignment.spaceBetween,
       children: [
         ProfileImage(
           image: profileImage,
           size: 50,
+        ),
+        const SizedBox(
+          width: 20,
         ),
         Column(
           children: [
             TitleCard(title: name, textAlign: TextAlign.left),
             DescPage(desc: '@$username', textAlign: TextAlign.left)
           ],
+        ),
+        const SizedBox(
+          width: 20,
         ),
         ButtonPrimary(textButton: "Follow", onClick: () {})
       ],

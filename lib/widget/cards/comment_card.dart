@@ -8,11 +8,13 @@ class CommentCard extends StatelessWidget {
   final String name;
   final String comment;
   final double marginVertical;
+  final int like;
   const CommentCard(
       {super.key,
       required this.profileImage,
       required this.comment,
       required this.name,
+      required this.like,
       required this.marginVertical});
 
   @override
@@ -20,6 +22,7 @@ class CommentCard extends StatelessWidget {
     return Container(
         margin: EdgeInsets.symmetric(vertical: marginVertical),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -44,7 +47,10 @@ class CommentCard extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            DescPage(desc: comment),
+            DescPage(
+              desc: comment,
+              textAlign: TextAlign.start,
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -60,7 +66,7 @@ class CommentCard extends StatelessWidget {
                         width: 5,
                       ),
                       Text(
-                        "200",
+                        like.toString(),
                         style: TextStyle(fontSize: 12, color: Colors.grey[800]),
                       ),
                     ],

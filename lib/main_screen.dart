@@ -7,7 +7,7 @@ import 'package:scribblr_article_blog_app/widget/texts/title_card.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_page.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_section.dart';
 import 'package:scribblr_article_blog_app/wrapper_scroll.dart';
-import 'package:scribblr_article_blog_app/model/article_recent.dart';
+import 'package:scribblr_article_blog_app/model/article_data.dart';
 import 'package:intl/intl.dart';
 
 class MainScreen extends StatelessWidget {

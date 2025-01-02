@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:scribblr_article_blog_app/model/article_recent.dart';
+import 'package:scribblr_article_blog_app/model/article_data.dart';
 import 'package:scribblr_article_blog_app/page/article_screen.dart';
 import 'package:scribblr_article_blog_app/page/writter_profile_screen.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_card.dart';
@@ -44,10 +44,13 @@ class ArticleList extends StatelessWidget {
                       title: article.title,
                       authorName: article.author,
                       authorImage: article.authorImage,
+                      articleImage: article.articleImage,
                       authorUsername: article.author,
                       content: article.content,
+                      comments: article.comments,
                       publishDate: article.publishDate,
                       publishTime: article.publishTime,
+                      tags: article.tags,
                     );
                   }));
                 },

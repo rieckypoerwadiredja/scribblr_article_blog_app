@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:scribblr_article_blog_app/model/article_recent.dart';
+import 'package:scribblr_article_blog_app/model/article_data.dart';
 import 'package:scribblr_article_blog_app/page/article_screen.dart';
+import 'package:scribblr_article_blog_app/utils/app_padding.dart';
 import 'package:scribblr_article_blog_app/widget/buttons/button_primary.dart';
 import 'package:scribblr_article_blog_app/widget/cards/article_card.dart';
 import 'package:scribblr_article_blog_app/widget/cards/card_menu.dart';
@@ -47,7 +48,7 @@ class HomeScreen extends StatelessWidget {
         // Hero Card
         HeadCard(
           children: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              padding: AppPadding.mainPadding,
               child: Stack(
                 children: [
                   // Image di background
@@ -140,10 +141,13 @@ class ArticleList extends StatelessWidget {
                       title: article.title,
                       authorName: article.author,
                       authorImage: article.authorImage,
+                      articleImage: article.articleImage,
                       authorUsername: article.author,
                       content: article.content,
+                      comments: article.comments,
                       publishDate: article.publishDate,
                       publishTime: article.publishTime,
+                      tags: article.tags,
                     );
                   }));
                 },
@@ -153,13 +157,14 @@ class ArticleList extends StatelessWidget {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return ArticleCard(
-                          title: article.title,
-                          authorName: article.author,
-                          authorImage: article.authorImage,
-                          constraintsMaxHeight: constraints.maxHeight,
-                          articleImage: article.articleImage,
-                          publishDate: article.publishDate,
-                          publishTime: article.publishTime);
+                        title: article.title,
+                        authorName: article.author,
+                        authorImage: article.authorImage,
+                        constraintsMaxHeight: constraints.maxHeight,
+                        articleImage: article.articleImage,
+                        publishDate: article.publishDate,
+                        publishTime: article.publishTime,
+                      );
                     },
                   ),
                 ),

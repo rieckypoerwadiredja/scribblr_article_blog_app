@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:scribblr_article_blog_app/widget/texts/desc_page.dart';
 
 class ButtonTag extends StatelessWidget {
   final String textButton;
@@ -10,6 +9,7 @@ class ButtonTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.only(right: 5),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         border: Border.all(
