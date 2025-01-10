@@ -10,5 +10,5 @@ class AppPadding {
   );
 
   static const EdgeInsets articlePadding =
-      EdgeInsets.only(left: 24.0, right: 24.0, top: 24.0);
+      EdgeInsets.only(left: 30.0, right: 30.0, top: 24.0);
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scribblr_article_blog_app/model/article_data.dart';
 import 'package:scribblr_article_blog_app/page/article_screen.dart';
+import 'package:scribblr_article_blog_app/page/notification_screen.dart';
 import 'package:scribblr_article_blog_app/utils/app_padding.dart';
 import 'package:scribblr_article_blog_app/widget/buttons/button_primary.dart';
 import 'package:scribblr_article_blog_app/widget/cards/article_card.dart';
@@ -35,7 +36,11 @@ class HomeScreen extends StatelessWidget {
               visualDensity: const VisualDensity(horizontal: -2.0, vertical: 0),
               padding: EdgeInsets.zero,
               iconSize: 25,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const NotificationScreen();
+                }));
+              },
               icon: const Icon(Icons.notifications_outlined)),
           IconButton(
               padding: const EdgeInsets.only(right: 16.0),

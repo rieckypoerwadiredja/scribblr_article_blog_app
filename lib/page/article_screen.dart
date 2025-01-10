@@ -41,7 +41,7 @@ class ArticleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
     double screenHeght = MediaQuery.of(context).size.height;
 
     return Scaffold(

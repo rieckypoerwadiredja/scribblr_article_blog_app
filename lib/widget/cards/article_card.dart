@@ -101,7 +101,7 @@ class ArticleCard extends StatelessWidget {
                         ),
                         if (screenWidth > 375) ...[
                           Text(
-                            authorName,
+                            authorName.split(' ')[0],
                             style: TextStyle(
                               fontSize: 10,
                               color: Theme.of(context).colorScheme.onPrimary,

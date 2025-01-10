@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:scribblr_article_blog_app/splash_screen.dart';
 import 'package:scribblr_article_blog_app/utils/custom_colors.dart';
 
 void main() {
+  WidgetsFlutterBinding
+      .ensureInitialized(); // required to support SemanticsBinding
+  SemanticsBinding.instance
+      .ensureSemantics(); // add this line to render webelements for UI readers/automation
   runApp(const MyApp());
 }
 
