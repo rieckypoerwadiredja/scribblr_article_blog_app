@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scribblr_article_blog_app/model/notification_data.dart';
 import 'package:scribblr_article_blog_app/utils/app_padding.dart';
-import 'package:scribblr_article_blog_app/utils/custom_colors.dart';
+import 'package:scribblr_article_blog_app/utils/custome_data_type.dart';
 import 'package:scribblr_article_blog_app/widget/images/loading_image.dart';
 import 'package:scribblr_article_blog_app/widget/images/profile_image.dart';
 import 'package:scribblr_article_blog_app/widget/texts/desc_page.dart';
@@ -10,13 +10,33 @@ import 'package:scribblr_article_blog_app/widget/texts/title_page.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_section.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-class NotificationScreen extends StatelessWidget {
+class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
+
+  @override
+  State<NotificationScreen> createState() => _NotificationScreenState();
+}
+
+class _NotificationScreenState extends State<NotificationScreen> {
+  NotificationType notificationType = NotificationType.general;
+
+  void changeNotification(NotificationType notification) {
+    setState(() {
+      notificationType = notification;
+      print(notification);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+
+// conversion enum to string
+    String notificationTypeString = notificationType.toString().split('.').last;
+
+    final filteredNotifications = notificationList
+        .where((n) => n.category == notificationTypeString)
+        .toList();
 
     return Scaffold(
         appBar: AppBar(
@@ -39,97 +59,115 @@ class NotificationScreen extends StatelessWidget {
           child: Column(
             children: [
               // TODO: Top navigation General & System
-              Container(
-                child: Align(
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    width: screenWidth > 550
-                        ? screenWidth / 3 * 2
-                        : double.infinity,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                      minimumSize:
-                                          const Size(double.infinity, 50),
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius
-                                            .zero, // Tidak ada rounded
-                                      ),
-                                    ),
-                                    child: Text(
-                                      "General",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary),
+              Align(
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width:
+                      screenWidth > 550 ? screenWidth / 3 * 2 : double.infinity,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Align(
+                                alignment: Alignment.center,
+                                child: TextButton(
+                                  onPressed: () {
+                                    changeNotification(
+                                        NotificationType.general);
+                                  },
+                                  style: TextButton.styleFrom(
+                                    minimumSize:
+                                        const Size(double.infinity, 50),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius
+                                          .zero, // Tidak ada rounded
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  height: 4, // Ketebalan border
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary, // Warna border
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                      minimumSize:
-                                          const Size(double.infinity, 50),
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius
-                                            .zero, // Tidak ada rounded
-                                      ),
-                                    ),
-                                    child: Text(
-                                      "System",
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSecondary),
-                                    ),
+                                  child: Text(
+                                    "General",
+                                    style: TextStyle(
+                                        color: notificationType ==
+                                                NotificationType.general
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .onSecondary),
                                   ),
                                 ),
-                                Container(
-                                  height: 4, // Ketebalan border
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSecondary, // Warna border
-                                ),
-                              ],
-                            ),
+                              ),
+                              Container(
+                                height: 4, // Ketebalan border
+                                color:
+                                    notificationType == NotificationType.general
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary, // Warna border
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Align(
+                                alignment: Alignment.center,
+                                child: TextButton(
+                                  onPressed: () {
+                                    changeNotification(NotificationType.system);
+                                  },
+                                  style: TextButton.styleFrom(
+                                    minimumSize:
+                                        const Size(double.infinity, 50),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius
+                                          .zero, // Tidak ada rounded
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "System",
+                                    style: TextStyle(
+                                        color: notificationType ==
+                                                NotificationType.general
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .onSecondary
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height: 4, // Ketebalan border
+                                color: notificationType ==
+                                        NotificationType.general
+                                    ? Theme.of(context).colorScheme.onSecondary
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .primary, // Warna border
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
               // TODO: EMPTY CONTENT
               ...[
-                if (notificationList.isEmpty)
+                if (filteredNotifications.isEmpty)
                   Center(
                       child: Column(
                     children: [
@@ -147,16 +185,19 @@ class NotificationScreen extends StatelessWidget {
                       )
                     ],
                   ))
-                // TODO CONTENT
                 else
-                  Container(
+
+                  // TODO CONTENT
+
+                  SizedBox(
                     width: screenWidth > 550
                         ? screenWidth / 3 * 2
                         : double.infinity,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        for (var notification in notificationList)
+                        // TODO Loop Content
+                        for (var notification in filteredNotifications)
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Flex(
@@ -183,7 +224,7 @@ class NotificationScreen extends StatelessWidget {
                                 // Teks (Judul dan Deskripsi)
                                 Expanded(
                                   flex:
-                                      5, // Menentukan proporsi ruang yang diambil teks
+                                      8, // Menentukan proporsi ruang yang diambil teks
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8.0),
@@ -198,12 +239,20 @@ class NotificationScreen extends StatelessWidget {
                                                   ? '${notification.name} has commented on your article!'
                                                   : notification.type == "like"
                                                       ? '${notification.name} liked your article!'
-                                                      : 'Unknown notification type', // Default message jika jenisnya tidak dikenali
+                                                      : notification
+                                                          .name, // Default message jika jenisnya tidak dikenali
                                         ),
                                         DescPage(
                                           desc:
                                               "${timeago.format(DateTime.parse(notification.publishDate))} - ${notification.publishTime}",
                                         ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        if (notification.desc != null)
+                                          DescPage(
+                                            desc: notification.desc ?? "",
+                                          ),
                                       ],
                                     ),
                                   ),
@@ -215,12 +264,33 @@ class NotificationScreen extends StatelessWidget {
                                       ? 3
                                       : 2, // Menentukan proporsi ruang yang diambil gambar konten
                                   child: Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: LoadingImage(
-                                      image: notification.contentImage,
-                                      rounded: 10,
-                                    ),
-                                  ),
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                      child: notification.contentImage != null
+                                          ? LoadingImage(
+                                              image:
+                                                  notification.contentImage ??
+                                                      "",
+                                              rounded: 10,
+                                            )
+                                          : Container(
+                                              child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  child: Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 3,
+                                                        horizontal: 8),
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary,
+                                                    child: const Text(
+                                                      "New",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  )),
+                                            )),
                                 ),
 
                                 IconButton(
