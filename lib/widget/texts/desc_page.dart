@@ -19,12 +19,22 @@ class DescPage extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     double fontSize;
 
-    if (screenWidth < 648) {
-      fontSize = screenWidth * 0.045;
-    } else if (screenWidth >= 648 && screenWidth < 920) {
-      fontSize = screenWidth * 0.03;
+    /// This block of code is determining the font size based on the width of the screen. Here's how it
+    /// works:
+
+    // if (screenWidth < 648) {
+    //   fontSize = screenWidth * 0.045;
+    // } else if (screenWidth >= 648 && screenWidth < 920) {
+    //   fontSize = screenWidth * 0.03;
+    // } else {
+    //   fontSize = screenWidth * 0.015;
+    // }
+    if (screenWidth <= 550) {
+      fontSize = 14;
+    } else if (screenWidth < 920) {
+      fontSize = 14;
     } else {
-      fontSize = screenWidth * 0.015;
+      fontSize = 16;
     }
 
     return Text(

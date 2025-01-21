@@ -3,6 +3,7 @@ import 'package:scribblr_article_blog_app/model/comment_model.dart';
 
 var articleList = [
   ArticleModel(
+    id: 1727748932,
     title: "Mengenal Kasih Tuhan yang Tanpa Syarat",
     author: "Jane Doe",
     authorImage:
@@ -78,6 +79,7 @@ var articleList = [
     ],
   ),
   ArticleModel(
+    id: 1928181090,
     title: "Mengapa Kasih Tuhan Itu Penuh Pengampunan?",
     author: "John Smith",
     authorImage:
@@ -153,6 +155,7 @@ var articleList = [
     ],
   ),
   ArticleModel(
+    id: 4108213089,
     title: "Berjuang Dalam Iman di Tengah Tantangan",
     author: "Rachel Adams",
     authorImage:
@@ -228,6 +231,7 @@ var articleList = [
     ],
   ),
   ArticleModel(
+    id: 7997143345,
     title: "Menghadapi Ketakutan dengan Keberanian yang Diberikan Tuhan",
     author: "Rachel Adams",
     authorImage:

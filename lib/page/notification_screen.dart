@@ -4,10 +4,10 @@ import 'package:scribblr_article_blog_app/utils/app_padding.dart';
 import 'package:scribblr_article_blog_app/utils/custome_data_type.dart';
 import 'package:scribblr_article_blog_app/widget/images/loading_image.dart';
 import 'package:scribblr_article_blog_app/widget/images/profile_image.dart';
+import 'package:scribblr_article_blog_app/widget/layouts/empty_layout.dart';
 import 'package:scribblr_article_blog_app/widget/texts/desc_page.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_card.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_page.dart';
-import 'package:scribblr_article_blog_app/widget/texts/title_section.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationScreen extends StatefulWidget {
@@ -23,7 +23,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void changeNotification(NotificationType notification) {
     setState(() {
       notificationType = notification;
-      print(notification);
     });
   }
 
@@ -168,23 +167,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
               // TODO: EMPTY CONTENT
               ...[
                 if (filteredNotifications.isEmpty)
-                  Center(
-                      child: Column(
-                    children: [
-                      Image.asset(
-                        'images/empty_data.png',
-                        width: screenWidth > 550
-                            ? screenWidth / 3
-                            : double.infinity,
-                      ),
-                      const TitleSection(title: "Empty"),
-                      const DescPage(
-                        desc:
-                            "Empty You don't have any notification at this time",
-                        textAlign: TextAlign.center,
-                      )
-                    ],
-                  ))
+                  EmptyLayout(
+                      screenWidth: screenWidth,
+                      title: "Empty",
+                      desc:
+                          "Empty You don't have any notification at this time")
                 else
 
                   // TODO CONTENT
@@ -198,7 +185,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
                       children: <Widget>[
                         // TODO Loop Content
                         for (var notification in filteredNotifications)
-                          Padding(
+                          Container(
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Colors.black12, // Warna garis bawah
+                                  width: 1.0, // Ketebalan garis bawah
+                                ),
+                              ),
+                            ),
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Flex(
                               direction: Axis

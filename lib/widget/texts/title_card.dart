@@ -4,10 +4,12 @@ class TitleCard extends StatelessWidget {
   final String? title;
   final TextAlign textAlign;
   final Color color;
+  final int maxLines;
   const TitleCard(
       {super.key,
       this.color = Colors.black,
       required this.title,
+      this.maxLines = 2,
       this.textAlign = TextAlign.start});
 
   @override
@@ -15,14 +17,12 @@ class TitleCard extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     double fontSize;
 
-    if (screenWidth < 425) {
-      fontSize = 15;
-    } else if (screenWidth >= 425 && screenWidth < 648) {
-      fontSize = 17;
-    } else if (screenWidth >= 648 && screenWidth < 920) {
-      fontSize = 20;
+    if (screenWidth <= 550) {
+      fontSize = 14;
+    } else if (screenWidth < 920) {
+      fontSize = 16;
     } else {
-      fontSize = 20;
+      fontSize = 18;
     }
 
     return Text(
@@ -34,6 +34,7 @@ class TitleCard extends StatelessWidget {
         fontFamily: 'Poppins',
         fontWeight: FontWeight.bold,
       ),
+      maxLines: maxLines,
     );
   }
 }

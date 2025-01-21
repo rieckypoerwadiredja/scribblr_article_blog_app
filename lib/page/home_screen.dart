@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
 import 'package:scribblr_article_blog_app/model/article_data.dart';
+import 'package:scribblr_article_blog_app/model/article_model.dart';
 import 'package:scribblr_article_blog_app/page/article_screen.dart';
+import 'package:scribblr_article_blog_app/page/bookmark_screen.dart';
 import 'package:scribblr_article_blog_app/page/notification_screen.dart';
 import 'package:scribblr_article_blog_app/utils/app_padding.dart';
 import 'package:scribblr_article_blog_app/widget/buttons/button_primary.dart';
@@ -18,6 +21,13 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
+    // TODO Seach Bookmark article
+    List<ArticleModel> bookmarkFullData = articleList
+        .where((article) =>
+            articleBookmarkList.any((bookmark) => bookmark.id == article.id))
+        .toList();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 4.0,
@@ -45,7 +55,11 @@ class HomeScreen extends StatelessWidget {
           IconButton(
               padding: const EdgeInsets.only(right: 16.0),
               iconSize: 25,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return const BookmarkScreen();
+                }));
+              },
               icon: const Icon(Icons.bookmark_border_outlined))
         ],
       ),
@@ -91,17 +105,23 @@ class HomeScreen extends StatelessWidget {
               )),
         ),
         // Section Recent Article
-        const CardMenu(
+        CardMenu(
           title: "Recent Articles",
-          children: ArticleList(),
+          children: ArticleList(
+            data: [...articleList],
+          ),
         ),
-        const CardMenu(
+        CardMenu(
           title: "Your Articles",
-          children: ArticleList(),
+          children: ArticleList(
+            data: [...articleList],
+          ),
         ),
-        const CardMenu(
+        CardMenu(
           title: "On Your Bookmarks",
-          children: ArticleList(),
+          children: ArticleList(
+            data: [...bookmarkFullData],
+          ),
         ),
       ]),
       bottomNavigationBar: screenWidth <= 768 ? const BottomNavigation() : null,
@@ -110,7 +130,8 @@ class HomeScreen extends StatelessWidget {
 }
 
 class ArticleList extends StatelessWidget {
-  const ArticleList({super.key});
+  final List data;
+  const ArticleList({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -121,11 +142,11 @@ class ArticleList extends StatelessWidget {
     if (screenWidth <= 450) {
       columnCount = 2;
     } else if (screenWidth <= 650) {
-      columnCount = 2;
-    } else if (screenWidth > 650 && screenWidth <= 920) {
       columnCount = 3;
-    } else {
+    } else if (screenWidth > 650 && screenWidth <= 920) {
       columnCount = 4;
+    } else {
+      columnCount = 5;
     }
     final double cardHeight = screenWidth < 450
         ? 250 // Tinggi untuk layar kecil
@@ -133,9 +154,9 @@ class ArticleList extends StatelessWidget {
 
     return ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: articleList.length,
+        itemCount: data.length,
         itemBuilder: (context, index) {
-          final article = articleList[index];
+          final article = data[index];
 
           return GestureDetector(
               behavior: HitTestBehavior.opaque,

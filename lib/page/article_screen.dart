@@ -9,6 +9,7 @@ import 'package:scribblr_article_blog_app/widget/cards/card_menu.dart';
 import 'package:scribblr_article_blog_app/widget/cards/comment_card.dart';
 import 'package:scribblr_article_blog_app/widget/cards/profile_card.dart';
 import 'package:scribblr_article_blog_app/widget/forms/tetfield_profile_image.dart';
+import 'package:scribblr_article_blog_app/widget/images/loading_image.dart';
 import 'package:scribblr_article_blog_app/widget/layouts/bottom_navigation.dart';
 import 'package:scribblr_article_blog_app/widget/texts/desc_page.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_page.dart';
@@ -190,24 +191,12 @@ class ArticleScreen extends StatelessWidget {
                       Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Container(
-                            color: Colors.grey[300],
-                            width: double.infinity,
-                            height: 200,
-                            child: Image.network(
-                              item["value"],
-                              fit: BoxFit.cover,
-                              loadingBuilder:
-                                  (context, child, loadingProgress) {
-                                if (loadingProgress == null) {
-                                  return child;
-                                } else {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                              },
-                            ),
-                          )),
+                              color: Colors.grey[300],
+                              width: double.infinity,
+                              height: 200,
+                              child: LoadingImage(
+                                image: item["value"],
+                              ))),
                     const SizedBox(height: 16),
                   ]
                 ],

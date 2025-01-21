@@ -1,6 +1,7 @@
 import 'package:scribblr_article_blog_app/model/comment_model.dart';
 
 class ArticleModel {
+  int id;
   String title;
   String author;
   List<String>
@@ -15,6 +16,7 @@ class ArticleModel {
   List<CommentModel> comments;
 
   ArticleModel({
+    required this.id,
     required this.title,
     required this.author,
     required this.tags,
@@ -40,6 +42,7 @@ class ArticleModel {
     List<CommentModel>? comments,
   }) {
     return ArticleModel(
+      id: id,
       title: title ?? this.title,
       author: author ?? this.author,
       tags: tags ?? this.tags,

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scribblr_article_blog_app/page/writter_profile_screen.dart';
+import 'package:scribblr_article_blog_app/widget/images/loading_image.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_card.dart';
 
 class ArticleCard extends StatelessWidget {
   final String title;
+  final bool? isRead;
+  final double width;
   final String authorName;
   final String authorImage;
   final String publishDate;
@@ -15,6 +18,8 @@ class ArticleCard extends StatelessWidget {
   const ArticleCard({
     super.key,
     required this.title,
+    this.width = double.infinity,
+    this.isRead,
     required this.authorName,
     required this.authorImage,
     required this.publishDate,
@@ -29,53 +34,44 @@ class ArticleCard extends StatelessWidget {
     DateTime articlePublish = DateFormat('yyyy-MM-dd').parse(publishDate);
 
     return Card(
+      shadowColor: Colors.black87,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           // Container untuk gambar dengan tinggi 50% dari tinggi Card
-          Container(
-            width: double.infinity,
+          SizedBox(
+            width: width,
             height: constraintsMaxHeight * 0.5, // 50% dari tinggi Card
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16.0),
-                topRight: Radius.circular(16.0),
-              ),
-            ),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16.0),
-                topRight: Radius.circular(16.0),
-              ),
-              child: Image.network(
-                articleImage,
-                fit: BoxFit.cover,
-              ),
+            child: LoadingImage(
+              size: double.infinity,
+              image: articleImage,
+              rounded: 10,
             ),
           ),
 
           // Konten Card
+
           Container(
             width: double.infinity,
             height: (constraintsMaxHeight * 0.5) - 8, // 50% dari tinggi Card
-            padding:
-                const EdgeInsets.only(left: 8, right: 8, top: 4, bottom: 4),
+            padding: const EdgeInsets.only(top: 4, bottom: 4),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TitleCard(
                   color: Theme.of(context).colorScheme.onPrimary,
+                  maxLines: 2,
                   title: screenWidth < 450
                       ? (title.length < 30
                           ? title
                           : "${title.substring(0, 30)}...")
                       : (screenWidth < 765
-                          ? (title.length < 30
+                          ? (title.length < 40
                               ? title
-                              : "${title.substring(0, 25)}...")
-                          : (title.length < 35
+                              : "${title.substring(0, 40)}...")
+                          : (title.length < 40
                               ? title
-                              : "${title.substring(0, 35)}...")),
+                              : "${title.substring(0, 40)}...")),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,24 +106,21 @@ class ArticleCard extends StatelessWidget {
                         ],
                       ]),
                     ),
-
-                    if (screenWidth > 375 && screenWidth < 550) ...[
-                      Icon(
-                        Icons.circle,
-                        size: 8,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                    ],
-                    // gap publish dan waktu sekarang
                     Row(
                       children: [
                         Text(
-                          DateTime.now().difference(articlePublish).inDays >= 1
-                              ? "${DateTime.now().difference(articlePublish).inDays} days ago"
-                              : "${DateTime.now().difference(articlePublish).inHours} hours ago",
+                          isRead == null
+                              ? DateTime.now()
+                                          .difference(articlePublish)
+                                          .inDays >=
+                                      1
+                                  ? "${DateTime.now().difference(articlePublish).inDays} days ago"
+                                  : "${DateTime.now().difference(articlePublish).inHours} hours ago"
+                              : (isRead == true ? "READ" : "UNREAD"),
                           style: TextStyle(
-                              fontSize: 10,
-                              color: Theme.of(context).colorScheme.onPrimary),
+                            fontSize: 10,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
                         ),
                         Icon(
                           Icons.more_vert,
