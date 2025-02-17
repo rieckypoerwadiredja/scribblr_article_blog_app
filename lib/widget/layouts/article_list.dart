@@ -47,6 +47,7 @@ class ArticleList extends StatelessWidget {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return ArticleScreen(
+                      id: article.id,
                       title: article.title,
                       authorName: article.author,
                       authorImage: article.authorImage,
