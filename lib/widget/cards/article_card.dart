@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scribblr_article_blog_app/page/writter_profile_screen.dart';
+import 'package:scribblr_article_blog_app/utils/custome_data_type.dart';
 import 'package:scribblr_article_blog_app/widget/images/loading_image.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_card.dart';
 
@@ -14,24 +15,28 @@ class ArticleCard extends StatelessWidget {
   final String publishTime;
   final String articleImage;
   final double constraintsMaxHeight;
+  final List<DropdownTypeMenuItem>? dropdownMenus;
 
-  const ArticleCard({
-    super.key,
-    required this.title,
-    this.width = double.infinity,
-    this.isRead,
-    required this.authorName,
-    required this.authorImage,
-    required this.publishDate,
-    required this.publishTime,
-    required this.articleImage,
-    required this.constraintsMaxHeight,
-  });
+  ArticleCard(
+      {super.key,
+      required this.title,
+      this.width = double.infinity,
+      this.isRead,
+      required this.authorName,
+      required this.authorImage,
+      required this.publishDate,
+      required this.publishTime,
+      required this.articleImage,
+      required this.constraintsMaxHeight,
+      this.dropdownMenus});
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     DateTime articlePublish = DateFormat('yyyy-MM-dd').parse(publishDate);
+
+    // Membuat GlobalKey untuk IconButton
+    final GlobalKey iconButtonKey = GlobalKey();
 
     return Card(
       shadowColor: Colors.black87,
@@ -122,10 +127,43 @@ class ArticleCard extends StatelessWidget {
                             color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
-                        Icon(
-                          Icons.more_vert,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
+                        InkWell(
+                          key: iconButtonKey,
+                          onTap: () {
+                            // Mengambil posisi IconButton
+                            final RenderBox renderBox =
+                                iconButtonKey.currentContext?.findRenderObject()
+                                    as RenderBox;
+                            final position =
+                                renderBox.localToGlobal(Offset.zero);
+
+                            showMenu(
+                              context: context,
+                              position: RelativeRect.fromLTRB(
+                                position.dx,
+                                position.dy +
+                                    renderBox
+                                        .size.height, // posisi bawah tombol
+                                position.dx + renderBox.size.width,
+                                position.dy,
+                              ), // Menennentukan posisi menu
+                              items: [
+                                for (var item in dropdownMenus ?? [])
+                                  PopupMenuItem(
+                                    value: item
+                                        .name, // Mengakses langsung dari objek DropdownTypeMenuItem
+                                    onTap: item
+                                        .event, // Memanggil event dari objek DropdownTypeMenuItem
+                                    child: Text(item.name),
+                                  ),
+                              ],
+                            );
+                          },
+                          child: Icon(
+                            Icons.more_vert,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        )
                       ],
                     )
                   ],

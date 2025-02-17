@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
 import 'package:scribblr_article_blog_app/model/article_data.dart';
+import 'package:scribblr_article_blog_app/model/article_model.dart';
+import 'package:scribblr_article_blog_app/model/bookmark_model.dart';
+import 'package:scribblr_article_blog_app/page/bookmark_screen.dart';
 import 'package:scribblr_article_blog_app/utils/app_padding.dart';
 import 'package:scribblr_article_blog_app/utils/get_filter_and_sort_articles_by_tags.dart';
 import 'package:scribblr_article_blog_app/utils/get_relative_time.dart';
@@ -16,6 +21,7 @@ import 'package:scribblr_article_blog_app/widget/texts/title_page.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_section.dart';
 
 class ArticleScreen extends StatelessWidget {
+  final int id;
   final String title;
   final String authorName;
   final String authorImage;
@@ -29,6 +35,7 @@ class ArticleScreen extends StatelessWidget {
 
   const ArticleScreen(
       {super.key,
+      required this.id,
       required this.title,
       required this.authorName,
       required this.authorImage,
@@ -94,8 +101,8 @@ class ArticleScreen extends StatelessWidget {
                           children: [
                             IconButton(
                               onPressed: () {},
-                              icon: const Icon(
-                                Icons.bookmark_add_outlined,
+                              icon: BookmarkIcon(
+                                articleId: id,
                                 color: Colors.white,
                               ),
                             ),
@@ -283,6 +290,10 @@ class ArticleList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    // TODO Get Data List all & Bookmark articles
+    final articleProvider =
+        Provider.of<ArticleProvider>(context, listen: false);
+    List<ArticleModel> articles = articleProvider.articles;
 
     // Tentukan jumlah kolom berdasarkan lebar layar
     int columnCount;
@@ -301,7 +312,7 @@ class ArticleList extends StatelessWidget {
 
     final activeTags = tags;
     final articleListRelatebyTags =
-        getFilterAndSortArticles(articleList, activeTags);
+        getFilterAndSortArticles(articles, activeTags);
 
     return ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -315,6 +326,7 @@ class ArticleList extends StatelessWidget {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return ArticleScreen(
+                      id: article.id,
                       title: article.title,
                       authorName: article.author,
                       authorImage: article.authorImage,

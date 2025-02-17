@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
+import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
+import 'package:scribblr_article_blog_app/model/article_data.dart';
 import 'package:scribblr_article_blog_app/splash_screen.dart';
 import 'package:scribblr_article_blog_app/utils/custom_colors.dart';
 
@@ -8,7 +11,19 @@ void main() {
       .ensureInitialized(); // required to support SemanticsBinding
   SemanticsBinding.instance
       .ensureSemantics(); // add this line to render webelements for UI readers/automation
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ArticleProvider()),
+        ChangeNotifierProvider(
+          create: (context) => BookmarkProvider(
+              articleProvider:
+                  Provider.of<ArticleProvider>(context, listen: false)),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {

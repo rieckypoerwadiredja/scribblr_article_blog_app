@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
 import 'package:scribblr_article_blog_app/widget/images/loading_image.dart';
 import 'package:scribblr_article_blog_app/widget/images/profile_image.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_card.dart';
 
+// todo buat statefull biar pas klik button bookmark bisa berubah
+
 class WideCard extends StatelessWidget {
+  final int articleId;
   final String articleImage;
   double? width;
   final String title;
@@ -14,8 +19,10 @@ class WideCard extends StatelessWidget {
   final String publishDate;
   final String publishTime;
   final double constraintsMaxHeight;
+  final List<Widget> icons;
   WideCard(
       {super.key,
+      required this.articleId,
       required this.articleImage,
       required this.title,
       required this.authorName,
@@ -24,6 +31,7 @@ class WideCard extends StatelessWidget {
       this.isRead,
       required this.publishDate,
       required this.constraintsMaxHeight,
+      required this.icons,
       required this.authorImage});
 
   @override
@@ -31,6 +39,8 @@ class WideCard extends StatelessWidget {
     DateTime articlePublish = DateFormat('yyyy-MM-dd').parse(publishDate);
 
     double screenWidth = MediaQuery.of(context).size.width;
+    final bookmarkProvider = Provider.of<BookmarkProvider>(context);
+    Function toggleBookmark = bookmarkProvider.toggleBookmark;
 
     return SizedBox(
       width: width ?? screenWidth,
@@ -100,20 +110,7 @@ class WideCard extends StatelessWidget {
                               ),
                             ),
                             Row(
-                              children: [
-                                GestureDetector(
-                                  onTap: () => {},
-                                  child: const Icon(
-                                    Icons.bookmark_added,
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () => {},
-                                  child: const Icon(
-                                    Icons.more_vert,
-                                  ),
-                                ),
-                              ],
+                              children: icons,
                             )
                           ],
                         )

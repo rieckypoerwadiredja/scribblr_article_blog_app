@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:scribblr_article_blog_app/model/article_data.dart';
+import 'package:scribblr_article_blog_app/model/article_model.dart';
 import 'package:scribblr_article_blog_app/page/article_screen.dart';
 import 'package:scribblr_article_blog_app/page/writter_profile_screen.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_card.dart';
@@ -11,6 +13,10 @@ class ArticleList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+    // TODO Get Data List all & Bookmark articles
+    final articleProvider =
+        Provider.of<ArticleProvider>(context, listen: false);
+    List<ArticleModel> articles = articleProvider.articles;
 
     // Tentukan jumlah kolom berdasarkan lebar layar
     int columnCount;
@@ -29,9 +35,9 @@ class ArticleList extends StatelessWidget {
 
     return ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: articleList.length,
+        itemCount: articles.length,
         itemBuilder: (context, index) {
-          final article = articleList[index];
+          final article = articles[index];
           DateTime articlePublish =
               DateFormat('yyyy-MM-dd').parse(article.publishDate);
 

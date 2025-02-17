@@ -1,13 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
-import 'package:scribblr_article_blog_app/model/article_data.dart';
 import 'package:scribblr_article_blog_app/model/bookmark_model.dart';
+import 'package:scribblr_article_blog_app/page/article_screen.dart';
 import 'package:scribblr_article_blog_app/utils/app_padding.dart';
 import 'package:scribblr_article_blog_app/widget/cards/article_card.dart';
 import 'package:scribblr_article_blog_app/widget/cards/wide_card.dart';
 import 'package:scribblr_article_blog_app/widget/layouts/empty_layout.dart';
 import 'package:scribblr_article_blog_app/widget/texts/desc_page.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_page.dart';
+
+class BookmarkIcon extends StatelessWidget {
+  BookmarkIcon({super.key, required this.articleId, this.color = Colors.black});
+  final int articleId;
+  Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final bookmarkProvider = Provider.of<BookmarkProvider>(context);
+    bool isBookmarked = bookmarkProvider.isBookmarked(articleId);
+
+    return GestureDetector(
+      onTap: () {
+        if (isBookmarked) {
+          // Jika sudah di-bookmark, tampilkan dialog konfirmasi
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("Confirmation"),
+              content: const Text(
+                  "Are you sure you want to remove this from bookmarks?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context), // Tutup dialog
+                  child: const Text("No"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Tutup dialog
+                    final result = bookmarkProvider.toggleBookmark(articleId);
+                    _showSnackBar(
+                        context, result['message']); // Tampilkan SnackBar
+                  },
+                  child: const Text("Yes"),
+                ),
+              ],
+            ),
+          );
+        } else {
+          // Jika belum di-bookmark, langsung tambahkan
+          final result = bookmarkProvider.toggleBookmark(articleId);
+          _showSnackBar(context, result['message']); // Tampilkan SnackBar
+        }
+      },
+      child: Icon(
+        isBookmarked ? Icons.bookmark_added : Icons.bookmark_add_outlined,
+        color: isBookmarked ? color : color,
+      ),
+    );
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2), // Muncul selama 2 detik
+        action: SnackBarAction(
+          label: 'Close',
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      ),
+    );
+  }
+}
 
 class BookmarkScreen extends StatefulWidget {
   const BookmarkScreen({super.key});
@@ -39,18 +106,14 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
     }
   }
 
-  // TODO Seach Bookmark article
-  List<ArticleBookmarkModel> bookmarkFullData = articleList
-      .where((article) =>
-          articleBookmarkList.any((bookmark) => bookmark.id == article.id))
-      .map((article) {
-    final bookmark = articleBookmarkList.firstWhere((b) => b.id == article.id);
-    return ArticleBookmarkModel(article: article, bookmark: bookmark);
-  }).toList();
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
+    final bookmarkProvider = Provider.of<BookmarkProvider>(context);
+    List<ArticleBookmarkModel> bookmarkedArticles =
+        bookmarkProvider.bookmarkedArticles;
+
     return Scaffold(
         appBar: AppBar(
           elevation: 4.0,
@@ -110,7 +173,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                       ],
                     ),
                     // TODO Content
-                    if (bookmarkFullData.isEmpty)
+                    if (bookmarkedArticles.isEmpty)
                       EmptyLayout(
                           screenWidth: screenWidth,
                           title: "Empty",
@@ -131,59 +194,185 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                 ? 200
                                 : (screenWidth > 550 ? 175 : 150),
                           ),
-                          itemCount: bookmarkFullData.length,
+                          itemCount: bookmarkedArticles.length,
                           itemBuilder: (context, index) {
                             return LayoutBuilder(
                                 builder: (context, constraints) {
                               return viewType
-                                  ? ArticleCard(
-                                      title:
-                                          bookmarkFullData[index].article.title,
-                                      authorName: bookmarkFullData[index]
-                                          .article
-                                          .author,
-                                      authorImage: bookmarkFullData[index]
-                                          .article
-                                          .articleImage,
-                                      publishDate: bookmarkFullData[index]
-                                          .article
-                                          .publishDate,
-                                      publishTime: bookmarkFullData[index]
-                                          .article
-                                          .publishTime,
-                                      articleImage: bookmarkFullData[index]
-                                          .article
-                                          .articleImage,
-                                      constraintsMaxHeight:
-                                          constraints.maxHeight,
-                                      isRead: bookmarkFullData[index]
-                                          .bookmark
-                                          .isRead,
+                                  ? InkWell(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ArticleScreen(
+                                            id: bookmarkedArticles[index]
+                                                .article
+                                                .id,
+                                            title: bookmarkedArticles[index]
+                                                .article
+                                                .title,
+                                            authorName:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .author,
+                                            authorImage:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .authorImage,
+                                            articleImage:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .articleImage,
+                                            authorUsername:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .author,
+                                            content: bookmarkedArticles[index]
+                                                .article
+                                                .content,
+                                            comments: bookmarkedArticles[index]
+                                                .article
+                                                .comments,
+                                            publishDate:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .publishDate,
+                                            publishTime:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .publishTime,
+                                            tags: bookmarkedArticles[index]
+                                                .article
+                                                .tags,
+                                          );
+                                        }));
+                                      },
+                                      child: ArticleCard(
+                                        title: bookmarkedArticles[index]
+                                            .article
+                                            .title,
+                                        authorName: bookmarkedArticles[index]
+                                            .article
+                                            .author,
+                                        authorImage: bookmarkedArticles[index]
+                                            .article
+                                            .articleImage,
+                                        publishDate: bookmarkedArticles[index]
+                                            .article
+                                            .publishDate,
+                                        publishTime: bookmarkedArticles[index]
+                                            .article
+                                            .publishTime,
+                                        articleImage: bookmarkedArticles[index]
+                                            .article
+                                            .articleImage,
+                                        constraintsMaxHeight:
+                                            constraints.maxHeight,
+                                        isRead: bookmarkedArticles[index]
+                                            .bookmark
+                                            .isRead,
+                                        dropdownMenus: [
+                                          // ! DropdownTypeMenuItem(
+                                          //   name:
+                                          //       "Delete from Bookmark", // Properti name diisi dengan string
+                                          //   event: () => deleteBookmark(
+                                          //       bookmarkedArticles[index]
+                                          //           .article
+                                          //           .id), // Properti event diisi dengan function
+                                          // ),
+                                        ],
+                                      ),
                                     )
-                                  : WideCard(
-                                      title:
-                                          bookmarkFullData[index].article.title,
-                                      authorName: bookmarkFullData[index]
-                                          .article
-                                          .author,
-                                      authorImage: bookmarkFullData[index]
-                                          .article
-                                          .articleImage,
-                                      publishDate: bookmarkFullData[index]
-                                          .article
-                                          .publishDate,
-                                      publishTime: bookmarkFullData[index]
-                                          .article
-                                          .publishTime,
-                                      articleImage: bookmarkFullData[index]
-                                          .article
-                                          .articleImage,
-                                      constraintsMaxHeight:
-                                          constraints.maxHeight,
-                                      isRead: bookmarkFullData[index]
-                                          .bookmark
-                                          .isRead,
-                                    );
+                                  : InkWell(
+                                      onTap: () {
+                                        Navigator.push(context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return ArticleScreen(
+                                            id: bookmarkedArticles[index]
+                                                .article
+                                                .id,
+                                            title: bookmarkedArticles[index]
+                                                .article
+                                                .title,
+                                            authorName:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .author,
+                                            authorImage:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .authorImage,
+                                            articleImage:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .articleImage,
+                                            authorUsername:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .author,
+                                            content: bookmarkedArticles[index]
+                                                .article
+                                                .content,
+                                            comments: bookmarkedArticles[index]
+                                                .article
+                                                .comments,
+                                            publishDate:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .publishDate,
+                                            publishTime:
+                                                bookmarkedArticles[index]
+                                                    .article
+                                                    .publishTime,
+                                            tags: bookmarkedArticles[index]
+                                                .article
+                                                .tags,
+                                          );
+                                        }));
+                                      },
+                                      child: WideCard(
+                                          articleId: bookmarkedArticles[index]
+                                              .article
+                                              .id,
+                                          title: bookmarkedArticles[index]
+                                              .article
+                                              .title,
+                                          authorName: bookmarkedArticles[index]
+                                              .article
+                                              .author,
+                                          authorImage: bookmarkedArticles[index]
+                                              .article
+                                              .articleImage,
+                                          publishDate: bookmarkedArticles[index]
+                                              .article
+                                              .publishDate,
+                                          publishTime: bookmarkedArticles[index]
+                                              .article
+                                              .publishTime,
+                                          articleImage:
+                                              bookmarkedArticles[index]
+                                                  .article
+                                                  .articleImage,
+                                          constraintsMaxHeight:
+                                              constraints.maxHeight,
+                                          isRead: bookmarkedArticles[index]
+                                              .bookmark
+                                              .isRead,
+                                          icons: <Widget>[
+                                            BookmarkIcon(
+                                              articleId:
+                                                  bookmarkedArticles[index]
+                                                      .article
+                                                      .id,
+                                            ), // Instansiasi dengan parameter
+                                            GestureDetector(
+                                              onTap: () => {},
+                                              child: const Icon(
+                                                Icons.more_vert,
+                                              ),
+                                            ),
+                                          ]));
                             });
                           },
                         ),

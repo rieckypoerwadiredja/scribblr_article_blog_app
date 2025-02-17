@@ -1,7 +1,7 @@
 import 'package:scribblr_article_blog_app/model/comment_model.dart';
 
 class ArticleModel {
-  int id;
+  final int id;
   String title;
   String author;
   List<String>

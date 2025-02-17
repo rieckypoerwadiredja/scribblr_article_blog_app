@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
 import 'package:scribblr_article_blog_app/model/article_data.dart';
 import 'package:scribblr_article_blog_app/model/article_model.dart';
+import 'package:scribblr_article_blog_app/model/bookmark_model.dart';
 import 'package:scribblr_article_blog_app/page/article_screen.dart';
 import 'package:scribblr_article_blog_app/page/bookmark_screen.dart';
 import 'package:scribblr_article_blog_app/page/notification_screen.dart';
@@ -22,11 +24,15 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
-    // TODO Seach Bookmark article
-    List<ArticleModel> bookmarkFullData = articleList
-        .where((article) =>
-            articleBookmarkList.any((bookmark) => bookmark.id == article.id))
-        .toList();
+    // TODO Get Data List all & Bookmark articles
+    final articleProvider =
+        Provider.of<ArticleProvider>(context, listen: false);
+    List<ArticleModel> articles = articleProvider.articles;
+
+    final bookmarkProvider = Provider.of<BookmarkProvider>(
+        context); // Tidak perlu 'listen: false' karena ini dalam build method
+    List<ArticleBookmarkModel> bookmarkedArticles =
+        bookmarkProvider.bookmarkedArticles;
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +59,6 @@ class HomeScreen extends StatelessWidget {
               },
               icon: const Icon(Icons.notifications_outlined)),
           IconButton(
-              padding: const EdgeInsets.only(right: 16.0),
               iconSize: 25,
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -108,19 +113,20 @@ class HomeScreen extends StatelessWidget {
         CardMenu(
           title: "Recent Articles",
           children: ArticleList(
-            data: [...articleList],
+            data: [...articles],
           ),
         ),
         CardMenu(
           title: "Your Articles",
           children: ArticleList(
-            data: [...articleList],
+            data: [...articles],
           ),
         ),
         CardMenu(
           title: "On Your Bookmarks",
           children: ArticleList(
-            data: [...bookmarkFullData],
+            data:
+                bookmarkedArticles.map((bookmark) => bookmark.article).toList(),
           ),
         ),
       ]),
@@ -152,6 +158,19 @@ class ArticleList extends StatelessWidget {
         ? 250 // Tinggi untuk layar kecil
         : (screenWidth < 765 ? 250 : 300);
 
+    // Cek apakah data kosong
+    if (data.isEmpty) {
+      return Center(
+        child: Text(
+          "No Data Available", // Pesan yang muncul saat data kosong
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.grey,
+          ),
+        ),
+      );
+    }
+
     return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: data.length,
@@ -164,16 +183,21 @@ class ArticleList extends StatelessWidget {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return ArticleScreen(
-                      title: article.title,
-                      authorName: article.author,
-                      authorImage: article.authorImage,
-                      articleImage: article.articleImage,
-                      authorUsername: article.author,
-                      content: article.content,
-                      comments: article.comments,
-                      publishDate: article.publishDate,
-                      publishTime: article.publishTime,
-                      tags: article.tags,
+                      id: article.id ?? article.article?.id,
+                      title: article.title ?? article.article?.title,
+                      authorName: article.author ?? article.article?.author,
+                      authorImage:
+                          article.authorImage ?? article.article?.authorImage,
+                      articleImage:
+                          article.articleImage ?? article.article?.articleImage,
+                      authorUsername: article.author ?? article.article?.author,
+                      content: article.content ?? article.article?.content,
+                      comments: article.comments ?? article.article?.comments,
+                      publishDate:
+                          article.publishDate ?? article.article?.publishDate,
+                      publishTime:
+                          article.publishTime ?? article.article?.publishTime,
+                      tags: article.tags ?? article.article?.tags,
                     );
                   }));
                 },
@@ -183,13 +207,23 @@ class ArticleList extends StatelessWidget {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return ArticleCard(
-                        title: article.title,
-                        authorName: article.author,
-                        authorImage: article.authorImage,
+                        title: article.title ?? article.article?.title,
+                        authorName: article.author ?? article.article?.author,
+                        authorImage:
+                            article.authorImage ?? article.article?.authorImage,
+                        articleImage: article.articleImage ??
+                            article.article?.articleImage,
+                        publishDate:
+                            article.publishDate ?? article.article?.publishDate,
+                        publishTime:
+                            article.publishTime ?? article.article?.publishTime,
                         constraintsMaxHeight: constraints.maxHeight,
-                        articleImage: article.articleImage,
-                        publishDate: article.publishDate,
-                        publishTime: article.publishTime,
+                        dropdownMenus: [
+                          // DropdownTypeMenuItem(
+                          //   name: "Add to Bookmark",
+                          //   event: () => addBookmark(article.id, false, false),
+                          // ),
+                        ],
                       );
                     },
                   ),
