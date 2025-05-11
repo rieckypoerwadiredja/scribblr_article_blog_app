@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class LoadingImage extends StatelessWidget {
@@ -22,34 +24,34 @@ class LoadingImage extends StatelessWidget {
           image, // URL gambar
           width: size, // Ukuran gambar
           height: size,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) {
               return child;
             } else {
               return const Center(
-                child: CircularProgressIndicator(), // Indikator loading
+                child: CircularProgressIndicator(),
               );
             }
           },
-          fit: BoxFit.cover,
-          alignment: Alignment.center,
           errorBuilder: (context, error, stackTrace) {
             // Placeholder ketika gambar gagal dimuat
             return Center(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.error_outline,
                     color: Colors.grey,
-                    size: size != null ? size! / 2 : 50, // Ikon error
+                    size: max((size! * 2 / 3) / 20, 12),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
+                  Text(
                     'Error loading image', // Teks placeholder
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: 14,
+                      fontSize: max((size! * 2 / 3) / 20, 12),
                     ),
                   ),
                 ],

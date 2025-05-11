@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
 import 'package:scribblr_article_blog_app/model/article_data.dart';
@@ -53,17 +54,13 @@ class HomeScreen extends StatelessWidget {
               padding: EdgeInsets.zero,
               iconSize: 25,
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const NotificationScreen();
-                }));
+                GoRouter.of(context).push('/notification');
               },
               icon: const Icon(Icons.notifications_outlined)),
           IconButton(
               iconSize: 25,
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return const BookmarkScreen();
-                }));
+                GoRouter.of(context).push('/bookmarks');
               },
               icon: const Icon(Icons.bookmark_border_outlined))
         ],
@@ -160,7 +157,7 @@ class ArticleList extends StatelessWidget {
 
     // Cek apakah data kosong
     if (data.isEmpty) {
-      return Center(
+      return const Center(
         child: Text(
           "No Data Available", // Pesan yang muncul saat data kosong
           style: TextStyle(
@@ -181,25 +178,24 @@ class ArticleList extends StatelessWidget {
               behavior: HitTestBehavior.opaque,
               child: InkWell(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ArticleScreen(
-                      id: article.id ?? article.article?.id,
-                      title: article.title ?? article.article?.title,
-                      authorName: article.author ?? article.article?.author,
-                      authorImage:
-                          article.authorImage ?? article.article?.authorImage,
-                      articleImage:
-                          article.articleImage ?? article.article?.articleImage,
-                      authorUsername: article.author ?? article.article?.author,
-                      content: article.content ?? article.article?.content,
-                      comments: article.comments ?? article.article?.comments,
-                      publishDate:
-                          article.publishDate ?? article.article?.publishDate,
-                      publishTime:
-                          article.publishTime ?? article.article?.publishTime,
-                      tags: article.tags ?? article.article?.tags,
+                  final id = article.id ?? article.article?.id;
+                  final title = article.title ?? article.article?.title;
+                  final author = article.author ?? article.article?.author;
+
+                  if (id != null && title != null && author != null) {
+                    final safeTitle = title.replaceAll(' ', '-');
+                    final safeAuthor = author.replaceAll(' ', '-');
+
+                    context.goNamed(
+                      'article',
+                      pathParameters: {
+                        'writer': safeAuthor,
+                        'titleId': '$safeTitle-$id',
+                      },
                     );
-                  }));
+                  } else {
+                    debugPrint('❌ Error: article, author, or id is null.');
+                  }
                 },
                 child: SizedBox(
                   width: screenWidth / columnCount,
@@ -218,6 +214,7 @@ class ArticleList extends StatelessWidget {
                         publishTime:
                             article.publishTime ?? article.article?.publishTime,
                         constraintsMaxHeight: constraints.maxHeight,
+                        icons: const <Widget>[], // ? NOT USE ICON
                         dropdownMenus: [
                           // DropdownTypeMenuItem(
                           //   name: "Add to Bookmark",

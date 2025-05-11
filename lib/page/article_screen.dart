@@ -8,6 +8,7 @@ import 'package:scribblr_article_blog_app/page/bookmark_screen.dart';
 import 'package:scribblr_article_blog_app/utils/app_padding.dart';
 import 'package:scribblr_article_blog_app/utils/get_filter_and_sort_articles_by_tags.dart';
 import 'package:scribblr_article_blog_app/utils/get_relative_time.dart';
+import 'package:scribblr_article_blog_app/widget/buttons/button_share.dart';
 import 'package:scribblr_article_blog_app/widget/buttons/button_tag.dart';
 import 'package:scribblr_article_blog_app/widget/cards/article_card.dart';
 import 'package:scribblr_article_blog_app/widget/cards/card_menu.dart';
@@ -22,33 +23,19 @@ import 'package:scribblr_article_blog_app/widget/texts/title_section.dart';
 
 class ArticleScreen extends StatelessWidget {
   final int id;
-  final String title;
-  final String authorName;
-  final String authorImage;
-  final String articleImage;
-  final String authorUsername;
-  final String publishDate;
-  final String publishTime;
-  final List content;
-  final List<String> tags;
-  final List comments;
 
-  const ArticleScreen(
-      {super.key,
-      required this.id,
-      required this.title,
-      required this.authorName,
-      required this.authorImage,
-      required this.articleImage,
-      required this.authorUsername,
-      required this.publishDate,
-      required this.publishTime,
-      required this.content,
-      required this.tags,
-      required this.comments});
+  const ArticleScreen({
+    super.key,
+    required this.id,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final articleBookmarkProvider =
+        Provider.of<BookmarkProvider>(context, listen: false);
+    Map<String, dynamic> articleResult =
+        articleBookmarkProvider.getArticleById(id);
+    final article = articleResult['article'];
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeght = MediaQuery.of(context).size.height;
 
@@ -61,21 +48,42 @@ class ArticleScreen extends StatelessWidget {
                 Container(
                   height: screenHeght / 3 * 2,
                   width: double.infinity,
-                  color: Colors.grey[300], // Warna abu-abu tipis
+                  color: Colors.grey[300],
                   child: Image.network(
-                    articleImage,
+                    article.articleImage,
                     height: screenHeght / 3 * 2,
                     width: double.infinity,
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) {
-                        return child; // Gambar selesai dimuat
+                        return child;
                       } else {
                         return const Center(
-                          child:
-                              CircularProgressIndicator(), // Placeholder saat loading
+                          child: CircularProgressIndicator(),
                         );
                       }
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      // Placeholder ketika gambar gagal dimuat
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              color: Colors.grey,
+                              size: screenHeght / 3 * 2 / 10, // Ikon error
+                            ),
+                            Text(
+                              'Error loading image', // Teks placeholder
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: (screenHeght * 2 / 3) / 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -106,13 +114,11 @@ class ArticleScreen extends StatelessWidget {
                                 color: Colors.white,
                               ),
                             ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.share,
-                                color: Colors.white,
-                              ),
-                            ),
+                            ButtonShare(
+                                title: article.title,
+                                defaultText: "Read Interesting Articles:",
+                                url:
+                                    'https://scribblr-bible.vercel.app/'), // todo: rubah url share
                             IconButton(
                               onPressed: () {},
                               icon: const Icon(
@@ -132,7 +138,7 @@ class ArticleScreen extends StatelessWidget {
             // TODO Content - Profile Card
             Padding(
               padding: AppPadding.mainTopPagePadding,
-              child: TitlePage(title: title),
+              child: TitlePage(title: article.title),
             ),
             const SizedBox(
               height: 15,
@@ -149,9 +155,9 @@ class ArticleScreen extends StatelessWidget {
               padding: const EdgeInsets.only(
                   top: 10, bottom: 10, left: 16, right: 16),
               child: ProfileCard(
-                name: authorName,
-                profileImage: authorImage,
-                username: authorName,
+                name: article.author,
+                profileImage: article.authorImage,
+                username: article.author,
               ),
             ),
             // Garis batas
@@ -170,12 +176,14 @@ class ArticleScreen extends StatelessWidget {
                 spacing: 8.0,
                 runSpacing: 8.0,
                 children: [
-                  for (var tag in tags)
+                  for (var tag in article.tags)
                     ButtonTag(
                       textButton: tag,
                       onClick: () {},
                     ),
-                  DescPage(desc: getRelativeTime(publishDate, publishTime)),
+                  DescPage(
+                      desc: getRelativeTime(
+                          article.publishDate, article.publishTime)),
                 ],
               ),
             ),
@@ -186,7 +194,7 @@ class ArticleScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (var item in content) ...[
+                  for (var item in article.content) ...[
                     if (item["type"] == "text") DescPage(desc: item["value"]),
                     if (item["type"] == "quote")
                       DescPage(
@@ -226,7 +234,7 @@ class ArticleScreen extends StatelessWidget {
                     Row(
                       children: [
                         TitleSection(
-                          title: "Comments (${comments.length})",
+                          title: "Comments (${article.comments.length})",
                           textAlign: TextAlign.start,
                         ),
                         IconButton(
@@ -244,7 +252,7 @@ class ArticleScreen extends StatelessWidget {
                       endIndent: 0,
                     ),
                     ...[
-                      for (var comment in comments)
+                      for (var comment in article.comments)
                         CommentCard(
                             marginVertical: 5,
                             profileImage: comment.commenterImage,
@@ -272,7 +280,7 @@ class ArticleScreen extends StatelessWidget {
               padding: AppPadding.mainPadding,
               child: CardMenu(
                 title: "More Article Like This",
-                children: ArticleList(tags: tags),
+                children: ArticleList(tags: article.tags),
               ),
             )
           ],
@@ -327,16 +335,6 @@ class ArticleList extends StatelessWidget {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return ArticleScreen(
                       id: article.id,
-                      title: article.title,
-                      authorName: article.author,
-                      authorImage: article.authorImage,
-                      articleImage: article.articleImage,
-                      authorUsername: article.author,
-                      content: article.content,
-                      comments: article.comments,
-                      publishDate: article.publishDate,
-                      publishTime: article.publishTime,
-                      tags: article.tags,
                     );
                   }));
                 },
@@ -352,6 +350,7 @@ class ArticleList extends StatelessWidget {
                           constraintsMaxHeight: constraints.maxHeight,
                           articleImage: article.articleImage,
                           publishDate: article.publishDate,
+                          icons: const <Widget>[], // ? NOT USE ICON
                           publishTime: article.publishTime);
                     },
                   ),

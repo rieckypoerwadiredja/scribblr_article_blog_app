@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
@@ -74,23 +75,29 @@ class WideCard extends StatelessWidget {
                             textAlign: TextAlign.left,
                           ),
                         ),
-                        Row(
-                          children: [
-                            ProfileImage(
-                              image: authorImage,
-                              size: 25,
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text(
-                              authorName,
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: Theme.of(context).colorScheme.onPrimary,
+                        InkWell(
+                          onTap: () {
+                            GoRouter.of(context).push('/$authorName');
+                          },
+                          child: Row(
+                            children: [
+                              ProfileImage(
+                                image: authorImage,
+                                size: 25,
                               ),
-                            ),
-                          ],
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                authorName,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

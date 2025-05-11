@@ -40,30 +40,62 @@ class BookmarkProvider extends ChangeNotifier {
   }
 
   Map<String, dynamic> toggleBookmark(int articleId) {
-    final index = _bookmarks.indexWhere((bookmark) => bookmark.id == articleId);
-    bool isBookmarked;
+    try {
+      final index =
+          _bookmarks.indexWhere((bookmark) => bookmark.id == articleId);
+      bool isBookmarked;
 
-    if (index == -1) {
-      _bookmarks
-          .add(BookmarkModel(id: articleId, isRead: false, isPinned: false));
-      isBookmarked = true;
-    } else {
-      _bookmarks.removeAt(index);
-      isBookmarked = false;
+      if (index == -1) {
+        _bookmarks
+            .add(BookmarkModel(id: articleId, isRead: false, isPinned: false));
+        isBookmarked = true;
+      } else {
+        _bookmarks.removeAt(index);
+        isBookmarked = false;
+      }
+
+      notifyListeners(); // Notify UI about changes
+
+      return {
+        'success': true,
+        'message': isBookmarked
+            ? 'Article successfully added to bookmarks.'
+            : 'Article successfully removed from bookmarks.',
+        'isBookmarked': isBookmarked,
+      };
+    } catch (e) {
+      debugPrint('❌ Error in toggleBookmark: $e'); // Log error to console
+      return {
+        'success': false,
+        'message': 'An error occurred while updating the bookmark.',
+        'isBookmarked': null,
+      };
     }
-
-    notifyListeners(); // Beri tahu UI tentang perubahan
-
-    return {
-      'success': true,
-      'message': isBookmarked
-          ? 'Artikel berhasil ditambahkan ke bookmark.'
-          : 'Artikel berhasil dihapus dari bookmark.',
-      'isBookmarked': isBookmarked,
-    };
   }
 
   bool isBookmarked(int id) {
     return _bookmarks.any((bookmark) => bookmark.id == id);
+  }
+
+  Map<String, dynamic> getArticleById(int id) {
+    final article = articleProvider.articles.cast<ArticleModel?>().firstWhere(
+          (article) => article?.id == id,
+          orElse: () => null,
+        );
+
+    if (article != null) {
+      return {
+        'success': true,
+        'message': 'Article found.',
+        'article': article,
+      };
+    } else {
+      debugPrint('❌ Error: Article with ID $id not found.');
+      return {
+        'success': false,
+        'message': 'Article with ID $id not found.',
+        'article': null,
+      };
+    }
   }
 }

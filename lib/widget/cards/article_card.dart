@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:scribblr_article_blog_app/page/writter_profile_screen.dart';
 import 'package:scribblr_article_blog_app/utils/custome_data_type.dart';
 import 'package:scribblr_article_blog_app/widget/images/loading_image.dart';
+import 'package:scribblr_article_blog_app/widget/images/profile_image.dart';
 import 'package:scribblr_article_blog_app/widget/texts/title_card.dart';
 
 class ArticleCard extends StatelessWidget {
@@ -16,7 +18,7 @@ class ArticleCard extends StatelessWidget {
   final String articleImage;
   final double constraintsMaxHeight;
   final List<DropdownTypeMenuItem>? dropdownMenus;
-
+  final List<Widget> icons;
   ArticleCard(
       {super.key,
       required this.title,
@@ -28,6 +30,7 @@ class ArticleCard extends StatelessWidget {
       required this.publishTime,
       required this.articleImage,
       required this.constraintsMaxHeight,
+      required this.icons,
       this.dropdownMenus});
 
   @override
@@ -48,7 +51,7 @@ class ArticleCard extends StatelessWidget {
             width: width,
             height: constraintsMaxHeight * 0.5, // 50% dari tinggi Card
             child: LoadingImage(
-              size: double.infinity,
+              size: 100,
               image: articleImage,
               rounded: 10,
             ),
@@ -59,7 +62,7 @@ class ArticleCard extends StatelessWidget {
           Container(
             width: double.infinity,
             height: (constraintsMaxHeight * 0.5) - 8, // 50% dari tinggi Card
-            padding: const EdgeInsets.only(top: 4, bottom: 4),
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -83,49 +86,45 @@ class ArticleCard extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const WritterProfileScreen();
-                        }));
+                        GoRouter.of(context).push('/$authorName');
                       },
                       child: Row(children: [
-                        ClipOval(
-                          child: Image.network(
-                            authorImage,
-                            fit: BoxFit.cover,
-                            height: 20,
-                            width: 20,
-                          ),
+                        ProfileImage(
+                          image: authorImage,
+                          size: 25,
                         ),
                         const SizedBox(
                           width: 10,
                         ),
+                        Text(
+                          authorName.split(' ')[0],
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                      ]),
+                    ),
+                    Row(
+                      children: [
                         if (screenWidth > 375) ...[
                           Text(
-                            authorName.split(' ')[0],
+                            isRead == null
+                                ? DateTime.now()
+                                            .difference(articlePublish)
+                                            .inDays >=
+                                        1
+                                    ? "${DateTime.now().difference(articlePublish).inDays} days ago"
+                                    : "${DateTime.now().difference(articlePublish).inHours} hours ago"
+                                : (isRead == true ? "READ" : "UNREAD"),
                             style: TextStyle(
                               fontSize: 10,
                               color: Theme.of(context).colorScheme.onPrimary,
                             ),
                           ),
                         ],
-                      ]),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          isRead == null
-                              ? DateTime.now()
-                                          .difference(articlePublish)
-                                          .inDays >=
-                                      1
-                                  ? "${DateTime.now().difference(articlePublish).inDays} days ago"
-                                  : "${DateTime.now().difference(articlePublish).inHours} hours ago"
-                              : (isRead == true ? "READ" : "UNREAD"),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
+                        Row(
+                          children: icons,
                         ),
                         InkWell(
                           key: iconButtonKey,

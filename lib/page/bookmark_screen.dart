@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
 import 'package:scribblr_article_blog_app/model/bookmark_model.dart';
 import 'package:scribblr_article_blog_app/page/article_screen.dart';
+import 'package:scribblr_article_blog_app/page/home_screen.dart';
 import 'package:scribblr_article_blog_app/utils/app_padding.dart';
 import 'package:scribblr_article_blog_app/widget/cards/article_card.dart';
 import 'package:scribblr_article_blog_app/widget/cards/wide_card.dart';
@@ -201,51 +203,35 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                               return viewType
                                   ? InkWell(
                                       onTap: () {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return ArticleScreen(
-                                            id: bookmarkedArticles[index]
-                                                .article
-                                                .id,
-                                            title: bookmarkedArticles[index]
-                                                .article
-                                                .title,
-                                            authorName:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .author,
-                                            authorImage:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .authorImage,
-                                            articleImage:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .articleImage,
-                                            authorUsername:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .author,
-                                            content: bookmarkedArticles[index]
-                                                .article
-                                                .content,
-                                            comments: bookmarkedArticles[index]
-                                                .article
-                                                .comments,
-                                            publishDate:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .publishDate,
-                                            publishTime:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .publishTime,
-                                            tags: bookmarkedArticles[index]
-                                                .article
-                                                .tags,
+                                        final id = bookmarkedArticles[index]
+                                            .article
+                                            .id;
+                                        final title = bookmarkedArticles[index]
+                                            .article
+                                            .title;
+                                        final author = bookmarkedArticles[index]
+                                            .article
+                                            .author;
+
+                                        if (id != null &&
+                                            title != null &&
+                                            author != null) {
+                                          final safeTitle =
+                                              title.replaceAll(' ', '-');
+                                          final safeAuthor =
+                                              author.replaceAll(' ', '-');
+
+                                          context.goNamed(
+                                            'article',
+                                            pathParameters: {
+                                              'writer': safeAuthor,
+                                              'titleId': '$safeTitle-$id',
+                                            },
                                           );
-                                        }));
+                                        } else {
+                                          debugPrint(
+                                              '❌ Error: article, author, or id is null.');
+                                        }
                                       },
                                       child: ArticleCard(
                                         title: bookmarkedArticles[index]
@@ -271,6 +257,13 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                         isRead: bookmarkedArticles[index]
                                             .bookmark
                                             .isRead,
+                                        icons: <Widget>[
+                                          BookmarkIcon(
+                                            articleId: bookmarkedArticles[index]
+                                                .article
+                                                .id,
+                                          ),
+                                        ],
                                         dropdownMenus: [
                                           // ! DropdownTypeMenuItem(
                                           //   name:
@@ -285,51 +278,35 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                     )
                                   : InkWell(
                                       onTap: () {
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return ArticleScreen(
-                                            id: bookmarkedArticles[index]
-                                                .article
-                                                .id,
-                                            title: bookmarkedArticles[index]
-                                                .article
-                                                .title,
-                                            authorName:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .author,
-                                            authorImage:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .authorImage,
-                                            articleImage:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .articleImage,
-                                            authorUsername:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .author,
-                                            content: bookmarkedArticles[index]
-                                                .article
-                                                .content,
-                                            comments: bookmarkedArticles[index]
-                                                .article
-                                                .comments,
-                                            publishDate:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .publishDate,
-                                            publishTime:
-                                                bookmarkedArticles[index]
-                                                    .article
-                                                    .publishTime,
-                                            tags: bookmarkedArticles[index]
-                                                .article
-                                                .tags,
+                                        final id = bookmarkedArticles[index]
+                                            .article
+                                            .id;
+                                        final title = bookmarkedArticles[index]
+                                            .article
+                                            .title;
+                                        final author = bookmarkedArticles[index]
+                                            .article
+                                            .author;
+
+                                        if (id != null &&
+                                            title != null &&
+                                            author != null) {
+                                          final safeTitle =
+                                              title.replaceAll(' ', '-');
+                                          final safeAuthor =
+                                              author.replaceAll(' ', '-');
+
+                                          context.goNamed(
+                                            'article',
+                                            pathParameters: {
+                                              'writer': safeAuthor,
+                                              'titleId': '$safeTitle-$id',
+                                            },
                                           );
-                                        }));
+                                        } else {
+                                          debugPrint(
+                                              '❌ Error: article, author, or id is null.');
+                                        }
                                       },
                                       child: WideCard(
                                           articleId: bookmarkedArticles[index]

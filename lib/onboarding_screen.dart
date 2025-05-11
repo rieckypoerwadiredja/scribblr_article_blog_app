@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scribblr_article_blog_app/page/home_screen.dart';
 import 'package:scribblr_article_blog_app/widget/buttons/button_primary.dart';
 import 'package:scribblr_article_blog_app/widget/buttons/button_secondary.dart';
@@ -101,10 +102,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     child: ButtonSecondary(
                       textButton: "Skip",
                       onClick: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return const HomeScreen();
-                        }));
+                        GoRouter.of(context).go('/');
                       },
                     ),
                   )),
@@ -121,10 +119,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           if (_slide < _slideContent.length - 1) {
                             _slide++;
                           } else {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (context) {
-                              return const HomeScreen();
-                            }));
+                            GoRouter.of(context).go('/');
                           }
                         });
                       },

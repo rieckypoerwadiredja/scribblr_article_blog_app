@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
 import 'package:scribblr_article_blog_app/model/article_data.dart';
-import 'package:scribblr_article_blog_app/splash_screen.dart';
+import 'package:scribblr_article_blog_app/routes/app_route_config.dart';
 import 'package:scribblr_article_blog_app/utils/custom_colors.dart';
 
 void main() {
   WidgetsFlutterBinding
       .ensureInitialized(); // required to support SemanticsBinding
+  usePathUrlStrategy();
   SemanticsBinding.instance
       .ensureSemantics(); // add this line to render webelements for UI readers/automation
+  GoRouter.optionURLReflectsImperativeAPIs = true;
   runApp(
     MultiProvider(
       providers: [
@@ -36,7 +41,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       theme: ThemeData(
         primaryColor: Colors.blue,
@@ -65,7 +70,7 @@ class _MyAppState extends State<MyApp> {
       //   ),
       // ),
       themeMode: ThemeMode.system, // Ikuti pengaturan sistem
-      home: const SplashScreen(),
+      routerConfig: appRouter,
     );
   }
 }

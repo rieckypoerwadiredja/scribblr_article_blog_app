@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scribblr_article_blog_app/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -19,8 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // Delay selama 3 detik sebelum berpindah ke MainScreen
     Future.delayed(const Duration(seconds: 3), () {
       // ignore: use_build_context_synchronously
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const OnBoardingScreen()));
+      GoRouter.of(context).go('/on-boarding');
     });
   }
 

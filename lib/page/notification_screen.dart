@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scribblr_article_blog_app/model/notification_data.dart';
+import 'package:scribblr_article_blog_app/page/home_screen.dart';
 import 'package:scribblr_article_blog_app/utils/app_padding.dart';
 import 'package:scribblr_article_blog_app/utils/custome_data_type.dart';
 import 'package:scribblr_article_blog_app/widget/images/loading_image.dart';
@@ -255,20 +257,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                                 // Gambar Konten
                                 Flexible(
-                                  flex: screenWidth < 550
-                                      ? 3
-                                      : 2, // Menentukan proporsi ruang yang diambil gambar konten
-                                  child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: notification.contentImage != null
-                                          ? LoadingImage(
-                                              image:
-                                                  notification.contentImage ??
-                                                      "",
-                                              rounded: 10,
-                                            )
-                                          : Container(
-                                              child: ClipRRect(
+                                  flex: screenWidth < 550 ? 3 : 2,
+                                  child: LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      double containerWidth = constraints
+                                          .maxWidth; // Lebar yang didapat dari Flexible
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: notification.contentImage != null
+                                            ? LoadingImage(
+                                                image:
+                                                    notification.contentImage ??
+                                                        "",
+                                                size:
+                                                    containerWidth, // Ukuran berdasarkan ruang yang tersedia
+                                                rounded: 10,
+                                              )
+                                            : Container(
+                                                width:
+                                                    containerWidth, // Pastikan mengikuti ukuran Flexible
+                                                child: ClipRRect(
                                                   borderRadius:
                                                       BorderRadius.circular(5),
                                                   child: Container(
@@ -284,8 +293,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                                       style: TextStyle(
                                                           color: Colors.white),
                                                     ),
-                                                  )),
-                                            )),
+                                                  ),
+                                                ),
+                                              ),
+                                      );
+                                    },
+                                  ),
                                 ),
 
                                 IconButton(

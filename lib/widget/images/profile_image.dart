@@ -23,6 +23,21 @@ class ProfileImage extends StatelessWidget {
                   );
                 }
               },
+              errorBuilder: (context, error, stackTrace) {
+                // Placeholder ketika gambar gagal dimuat
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        color: Colors.grey,
+                        size: size, // Ikon error
+                      ),
+                    ],
+                  ),
+                );
+              },
               fit: BoxFit.cover,
             )));
   }
