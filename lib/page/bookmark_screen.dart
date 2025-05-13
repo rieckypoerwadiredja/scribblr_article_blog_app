@@ -122,6 +122,12 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
           title: const TitlePage(
             title: "My Bookmark",
           ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              context.pop(); // <- go_router way of back
+            },
+          ),
           actions: [
             IconButton(
                 visualDensity:

@@ -186,13 +186,7 @@ class ArticleList extends StatelessWidget {
                     final safeTitle = title.replaceAll(' ', '-');
                     final safeAuthor = author.replaceAll(' ', '-');
 
-                    context.goNamed(
-                      'article',
-                      pathParameters: {
-                        'writer': safeAuthor,
-                        'titleId': '$safeTitle-$id',
-                      },
-                    );
+                    GoRouter.of(context).push('/$safeAuthor/$safeTitle-$id');
                   } else {
                     debugPrint('❌ Error: article, author, or id is null.');
                   }

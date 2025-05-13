@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scribblr_article_blog_app/model/article_bookmark.dart';
 import 'package:scribblr_article_blog_app/model/article_data.dart';
 import 'package:scribblr_article_blog_app/model/article_model.dart';
 import 'package:scribblr_article_blog_app/model/bookmark_model.dart';
 import 'package:scribblr_article_blog_app/page/bookmark_screen.dart';
+import 'package:scribblr_article_blog_app/page/home_screen.dart';
 import 'package:scribblr_article_blog_app/utils/app_padding.dart';
 import 'package:scribblr_article_blog_app/utils/get_filter_and_sort_articles_by_tags.dart';
 import 'package:scribblr_article_blog_app/utils/get_relative_time.dart';
@@ -40,6 +42,41 @@ class ArticleScreen extends StatelessWidget {
     double screenHeght = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 4.0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () {
+              context.pop(); // <- go_router way of back
+            },
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: BookmarkIcon(
+                articleId: id,
+                color: Colors.white,
+              ),
+            ),
+            ButtonShare(
+              title: article.title,
+              defaultText: "Read Interesting Articles:",
+              url: 'https://scribblr-bible.vercel.app/',
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.more_horiz_rounded,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -87,51 +124,6 @@ class ArticleScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: AppPadding.mainTopPagePadding,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(
-                            Icons.arrow_back_rounded,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: BookmarkIcon(
-                                articleId: id,
-                                color: Colors.white,
-                              ),
-                            ),
-                            ButtonShare(
-                                title: article.title,
-                                defaultText: "Read Interesting Articles:",
-                                url:
-                                    'https://scribblr-bible.vercel.app/'), // todo: rubah url share
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.more_horiz_rounded,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                )
               ],
             ),
 

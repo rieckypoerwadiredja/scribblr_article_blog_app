@@ -45,6 +45,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
           title: const TitlePage(
             title: "Notification",
           ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () {
+              context.pop(); // <- go_router way of back
+            },
+          ),
           actions: [
             IconButton(
                 visualDensity:
